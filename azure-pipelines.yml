@@ -42,9 +42,18 @@ steps:
   parameters:
     buildConfiguration: 'Release'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Install .NET tools from local manifest'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'restore'
+    
 - template: templates/test.yml
   parameters:
     buildConfiguration: 'Release'
+
+- template: templates/code-coverage.yml
 
 - template: templates/publish.yml
   parameters:
