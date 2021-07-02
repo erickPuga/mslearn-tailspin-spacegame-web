@@ -15,7 +15,6 @@ steps:
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
-    packageType: sdk
     version: '$(dotnetSdkVersion)'
 
 - task: Npm@1
@@ -41,9 +40,22 @@ steps:
 
 - template: templates/build.yml
   parameters:
-    buildConfiguration: 'Debug'
+    buildConfiguration: 'Release'
 
-- template: templates/build.yml
+- task: DotNetCoreCLI@2
+  displayName: 'Install .NET tools from local manifest'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'restore'
+
+- template: templates/test.yml
+  parameters:
+    buildConfiguration: 'Release'
+
+- template: templates/code-coverage.yml
+
+- template: templates/publish.yml
   parameters:
     buildConfiguration: 'Release'
 
